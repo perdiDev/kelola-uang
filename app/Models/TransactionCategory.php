@@ -20,4 +20,9 @@ class TransactionCategory extends Model
             "transaction_type" => TransactionType::class
         ];
     }
+
+    public function items()
+    {
+        return $this->hasMany(Item::class);
+    }
 }
