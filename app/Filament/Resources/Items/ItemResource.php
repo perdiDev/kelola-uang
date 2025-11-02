@@ -22,6 +22,21 @@ class ItemResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    public static function getModelLabel(): string
+    {
+        return __('item.title');
+    }
+
+    public static function getRecordTitleAttribute(): ?string
+    {
+        return __('item.title');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('item.nav');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return ItemForm::configure($schema);

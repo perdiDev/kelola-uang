@@ -13,12 +13,15 @@ class ItemForm
         return $schema
             ->components([
                 Select::make('transaction_category_id')
-                    ->label('Category')
+                    ->label(__('item.fields.category'))
                     ->relationship(name: 'transactionCategory', titleAttribute: 'name')
+                    ->native(false)
                     ->required(),
                 TextInput::make('name')
+                    ->label(__('item.fields.name'))
                     ->required(),
                 TextInput::make('item_price')
+                    ->label(__('item.fields.item_price'))
                     ->required()
                     ->numeric(),
             ]);

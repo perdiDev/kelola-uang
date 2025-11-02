@@ -19,11 +19,14 @@ class ItemsTable
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label(__('item.fields.name'))
                     ->searchable(),
                 TextColumn::make('transaction_category_id')
+                    ->label(__('item.fields.category'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('item_price')
+                    ->label(__('item.fields.item_price'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')
