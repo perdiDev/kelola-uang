@@ -17,8 +17,10 @@ class TransactionCategoriesTable
     {
         return $table
             ->columns([
-                TextColumn::make('name'),
+                TextColumn::make('name')
+                    ->label(__('category.fields.name')),
                 TextColumn::make('transaction_type')
+                    ->label(__('category.fields.transaction_type'))
                     ->badge()
                     ->searchable(),
                 TextColumn::make('created_at')

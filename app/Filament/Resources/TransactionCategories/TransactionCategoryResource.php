@@ -20,9 +20,22 @@ class TransactionCategoryResource extends Resource
 {
     protected static ?string $model = TransactionCategory::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Squares2x2;
 
-    protected static ?string $recordTitleAttribute = 'Category';
+    public static function getModelLabel(): string
+    {
+        return __('category.title');
+    }
+
+    public static function getRecordTitleAttribute(): ?string
+    {
+        return __('category.title');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('category.nav');
+    }
 
     public static function form(Schema $schema): Schema
     {

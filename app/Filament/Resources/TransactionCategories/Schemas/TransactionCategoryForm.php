@@ -14,10 +14,13 @@ class TransactionCategoryForm
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label(__('category.fields.name'))
                     ->required()
                     ->minLength(3),
                 Select::make('transaction_type')
+                    ->label(__('category.fields.transaction_type'))
                     ->options(TransactionType::class)
+                    ->native(false)
                     ->required(),
             ]);
     }
