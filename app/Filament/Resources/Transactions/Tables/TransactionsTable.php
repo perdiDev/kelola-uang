@@ -1,32 +1,36 @@
 <?php
 
-namespace App\Filament\Resources\Items\Tables;
+namespace App\Filament\Resources\Transactions\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
-use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
-class ItemsTable
+class TransactionsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('name')
-                    ->label(__('item.fields.name'))
-                    ->searchable(),
-                TextColumn::make('transactionCategory.name')
-                    ->label(__('item.fields.category'))
+                TextColumn::make('item.name')
+                    ->label(__('transaction.fields.item'))
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('item_price')
-                    ->label(__('item.fields.item_price'))
+                TextColumn::make('transaction_date')
+                    ->label(__('transaction.fields.transaction_date'))
+                    ->dateTime()
+                    ->sortable(),
+                TextColumn::make('amount')
+                    ->label(__('transaction.fields.amount'))
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('quantity')
+                    ->label(__('transaction.fields.quantity'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')
@@ -46,7 +50,6 @@ class ItemsTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
-                ViewAction::make(),
                 EditAction::make(),
             ])
             ->toolbarActions([

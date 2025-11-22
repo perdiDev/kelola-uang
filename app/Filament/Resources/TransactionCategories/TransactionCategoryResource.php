@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TransactionCategoryResource extends Resource
 {
+    protected static ?int $navigationSort = 3;
+
     protected static ?string $model = TransactionCategory::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Squares2x2;
