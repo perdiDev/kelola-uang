@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('transaction_categories', function (Blueprint $table) {
             $table->id();
-            $table->text("name");
-            $table->string("transaction_type");
+            $table->string("name");
+            $table->enum('transaction_type', ['income', 'expense']);
 
             $table->timestamps();
             $table->softDeletes();

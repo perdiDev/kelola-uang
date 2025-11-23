@@ -10,14 +10,21 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('item_id')->constrained();
+
+            $table->foreignId('item_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('transaction_category_id')->constrained()->cascadeOnDelete();
+
+            $table->enum('transaction_type', ['income', 'expense'])->index();
+
             $table->timestamp('transaction_date')->useCurrent();
             $table->text('description')->nullable();
+
             $table->unsignedInteger('amount');
             $table->unsignedTinyInteger('quantity');
 
             $table->timestamps();
             $table->softDeletes();
+
         });
     }
 
