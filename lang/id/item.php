@@ -5,7 +5,7 @@ return [
     'nav' => "Item",
     'fields' => [
         'name' => 'Nama Item',
-        'category' => 'Kategori',
+        'transaction_category_id' => 'Kategori',
         'item_price' => 'Harga'
     ],
 ];

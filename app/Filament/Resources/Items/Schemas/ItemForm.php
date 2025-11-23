@@ -13,7 +13,7 @@ class ItemForm
         return $schema
             ->components([
                 Select::make('transaction_category_id')
-                    ->label(__('item.fields.category'))
+                    ->label(__('item.fields.transaction_category_id'))
                     ->relationship(name: 'transactionCategory', titleAttribute: 'name')
                     ->native(false)
                     ->required(),

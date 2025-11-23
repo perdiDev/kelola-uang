@@ -24,6 +24,11 @@ class ItemResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name']; 
+    }
+
     public static function getModelLabel(): string
     {
         return __('item.title');
