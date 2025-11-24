@@ -6,7 +6,7 @@ use App\Models\Transaction;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 class TopItemsTableWidget extends BaseWidget
 {
@@ -20,24 +20,24 @@ class TopItemsTableWidget extends BaseWidget
             ->paginated(false);
     }
 
-    protected function getTableQuery(): Builder
+    public function getTableRecords(): Collection
     {
-        $aggregate = Transaction::query()
+        // Build the aggregation query
+        $results = Transaction::query()
             ->selectRaw('MIN(id) as id')
             ->selectRaw('item_id')
             ->selectRaw('SUM(quantity) as total')
             ->selectRaw("SUM(CASE WHEN transaction_type='income' THEN quantity ELSE 0 END) as income")
             ->selectRaw("SUM(CASE WHEN transaction_type='expense' THEN quantity ELSE 0 END) as expense")
-            ->groupBy('item_id');
+            ->groupBy('item_id')
+            ->orderByRaw('SUM(quantity) DESC')
+            ->limit(5)
+            ->get();
 
-        // Wrap the aggregation so ORDER BY doesn't refer to non-grouped base columns
-        return Transaction::query()
-            ->fromSub($aggregate, 't')
-            ->select('t.*')
-            ->with('item')
-            ->orderByDesc('total')
-            ->orderBy('id')
-            ->limit(5);
+        // Load the item relationships
+        $results->load('item');
+
+        return $results;
     }
 
     protected function getTableColumns(): array
