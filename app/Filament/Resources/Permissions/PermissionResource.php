@@ -13,6 +13,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use BackedEnum;
+use UnitEnum;
 
 class PermissionResource extends Resource
 {
@@ -23,6 +24,7 @@ class PermissionResource extends Resource
 
     protected static ?int $navigationSort = 7;
 
+    protected static string | UnitEnum | null $navigationGroup = 'Setting';
 
     public static function form(Schema $schema): Schema
     {
