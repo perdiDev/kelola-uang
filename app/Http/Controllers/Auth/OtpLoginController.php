@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\LoginCode;
+use App\Models\Role;
 use App\Models\User;
+use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -27,13 +29,21 @@ class OtpLoginController extends Controller
             ['name' => $request->email]
         );
 
-        $roleIdUser = \App\Models\Role::where('slug', 'user')->value('id');
-        $roleIdOwner = \App\Models\Role::where('slug', 'owner')->value('id');
+        // Ensure default roles exist before attaching them to the user
+        $roleUser = Role::firstOrCreate(
+            ['slug' => 'user'],
+            ['label' => 'Pengguna Biasa']
+        );
+
+        $roleOwner = Role::firstOrCreate(
+            ['slug' => 'owner'],
+            ['label' => 'Pemilik Sistem']
+        );
 
         if (User::count() === 1) {
-            $user->roles()->syncWithoutDetaching([$roleIdOwner]);
+            $user->roles()->syncWithoutDetaching([$roleOwner->id]);
         } else {
-            $user->roles()->syncWithoutDetaching([$roleIdUser]);
+            $user->roles()->syncWithoutDetaching([$roleUser->id]);
         }
 
         $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
@@ -42,6 +52,11 @@ class OtpLoginController extends Controller
             'user_id' => $user->id,
             'code' => $code,
             'expires_at' => now()->addMinutes(5),
+        ]);
+
+        ActivityLogger::log('otp.send', $user, 'success', [
+            'channel' => 'email',
+            'email' => $user->email,
         ]);
 
         session(['otp_email' => $user->email]);
@@ -91,20 +106,24 @@ class OtpLoginController extends Controller
             ->first();
 
         if (! $otp) {
+            ActivityLogger::log('otp.verify', $user, 'fail', ['reason' => 'not_found']);
             return back()->withErrors(['code' => 'Kode tidak valid.']);
         }
 
         if ($otp->isExpired()) {
+            ActivityLogger::log('otp.verify', $user, 'fail', ['reason' => 'expired']);
             return back()->withErrors(['code' => 'Kode kadaluarsa!']);
         }
 
         if ($otp->isUsed()) {
+            ActivityLogger::log('otp.verify', $user, 'fail', ['reason' => 'used']);
             return back()->withErrors(['code' => 'Kode sudah digunakan!']);
         }
 
         $otp->update(['used_at' => now()]);
 
         Auth::login($user);
+        ActivityLogger::log('otp.verify', $user, 'success');
 
         session()->forget('otp_email');
 

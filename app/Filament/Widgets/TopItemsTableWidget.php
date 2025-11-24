@@ -22,13 +22,21 @@ class TopItemsTableWidget extends BaseWidget
 
     protected function getTableQuery(): Builder
     {
-        return Transaction::selectRaw('MIN(id) as id, item_id')
+        $aggregate = Transaction::query()
+            ->selectRaw('MIN(id) as id')
+            ->selectRaw('item_id')
             ->selectRaw('SUM(quantity) as total')
             ->selectRaw("SUM(CASE WHEN transaction_type='income' THEN quantity ELSE 0 END) as income")
             ->selectRaw("SUM(CASE WHEN transaction_type='expense' THEN quantity ELSE 0 END) as expense")
+            ->groupBy('item_id');
+
+        // Wrap the aggregation so ORDER BY doesn't refer to non-grouped base columns
+        return Transaction::query()
+            ->fromSub($aggregate, 't')
+            ->select('t.*')
             ->with('item')
-            ->groupBy('item_id')
             ->orderByDesc('total')
+            ->orderBy('id')
             ->limit(5);
     }
 

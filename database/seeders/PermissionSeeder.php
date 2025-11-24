@@ -26,8 +26,11 @@ class PermissionSeeder extends Seeder
             ['slug' => 'permission.create', 'label' => 'Tambah Permission'],
             ['slug' => 'permission.edit',   'label' => 'Edit Permission'],
             ['slug' => 'permission.delete', 'label' => 'Hapus Permission'],
+
+            // Activity Log
+            ['slug' => 'activity.view', 'label' => 'View Activity Logs'],
         ];
 
-        Permission::insert($permissions);
+        Permission::upsert($permissions, ['slug'], ['label']);
     }
 }
